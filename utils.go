@@ -2,7 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"runtime"
+	"strconv"
 )
 
 const DEBUG = true
@@ -11,6 +13,25 @@ func Debug(str string, args ...interface{}) {
 	if DEBUG {
 		fmt.Printf(str, args...)
 		return
+	}
+}
+
+type Verbose struct {
+	Level int
+}
+
+// var verbose = (*utils.Verbose).New(nil)
+func (*Verbose) New() *Verbose {
+	level, err := strconv.Atoi(os.Getenv("GOPTOS_VERBOSE"))
+	if err != nil {
+		level = 0
+	}
+	return &Verbose{Level: level}
+}
+
+func (_self *Verbose) Printf(level int, str string, args ...interface{}) {
+	if _self.Level >= level {
+		fmt.Printf(str, args...)
 	}
 }
 
